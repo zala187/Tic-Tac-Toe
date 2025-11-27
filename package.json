@@ -3,14 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://github.com/zala187/Tic-Tac-Toe.git",
+  "homepage": "https://zala187.github.io/Tic-Tac-Toe/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "predeploy": "npm run build",
-"deploy": "gh-pages -d build",
-
+    "deploy": "gh-pages -d dist",
     "preview": "vite preview"
   },
   "dependencies": {

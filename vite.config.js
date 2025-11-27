@@ -5,7 +5,5 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
   ],
-  base:[
-    "/Tic-Tac-Toe"
-  ]
+  base: "/Tic-Tac-Toe/", 
 })
