@@ -1,103 +1,79 @@
-import React, {  useState } from 'react'
-import "./TicTacToe.css"
+import React, { useState } from 'react';
+import "./TicTacToe.css";
 import circle from "../../assets/circle.png";
-import cross from "../../assets/cross.png"
+import cross from "../../assets/cross.png";
 
 const TicTacToe = () => {
-    let [data , setData] = useState(["","","","","","","","",""]);
+  let [data, setData] = useState(Array(9).fill(""));
+  let [count, setCount] = useState(0);
+  let [lock, setLock] = useState(false);
 
-    let [count , setCount] = useState(0);
-    let [lock ,setLock] = useState(false);
+  const toggle = (num) => {
+    if (lock || data[num] !== "") return;
 
+    const newData = [...data];
+    newData[num] = count % 2 === 0 ? "x" : "o";
+    setData(newData);
 
-
-    const toggle =(e,num)=>{
-        let newData = [...data];
-
-        if(data[num] !== "")return;
-
-        if(lock){
-            return 0;
-        }
-        if(count %2===0){
-            e.currentTarget.innerHTML = `<img src = '${cross}'>`;
-            newData[num] = "x";
-            
-        }
-        else   {
-            e.currentTarget.innerHTML = `<img src = '${circle}'>`;
-            newData[num] = "o";
-            
-        }
-        setData(newData);
-        CheckWin(newData);
-        setCount(count + 1);
-
-    }
-    const CheckWin=()=>{
-        const win = [
-            [0,1,2],
-            [3,4,5],
-            [6,7,8],
-            [0,3,6],
-            [1,4,7],
-            [2,5,8],
-            [2,4,6],
-            [0,4,8]
-        ];
-
-        for(let combo of win){
-            const [ a,b,c] = combo;
-
-            if(data[a] && data[a] === data[b] && data[a]===data[c]){
-                alert(data[a] +  "won !")
-               setLock(true);
-               return true
-              
-            }
-        }
-        return false;
-
+    const winner = CheckWin(newData);
+    if (winner) {
+      alert(`${winner.toUpperCase()} Won!`);
+      setLock(true);
+      return;
     }
 
-    const resetGame=()=>{
-         setData(["","","","","","","","",""]);
-        setLock(false);
-        setCount(0);
+    setCount(prev => prev + 1);
+  };
 
-      document.querySelectorAll(".boxes").forEach(box=>{
-        box.innerHTML = " ";
-      })  
+  const CheckWin = (newData) => {
+    const win = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
 
+    for (let [a,b,c] of win) {
+      if (newData[a] && newData[a] === newData[b] && newData[a] === newData[c]) {
+        return newData[a];
+      }
     }
-   
-  return (
-    <div className='flex justify-center items-center h-screen flex-col gap-5'>
-        <h1 className='title text-white text-2xl'>Tic Tac Toe Game In<span>React</span></h1>
-        <div className="board flex">
-            <div className="row1">
-                <div className="boxes" onClick={(e)=>{toggle(e,0)}}></div>
-                <div className="boxes" onClick={(e)=>{toggle(e,1)}}></div>
-                <div className="boxes" onClick={(e)=>{toggle(e,2)}}></div>
+    return null;
+  };
 
-            </div>
-             <div className="row2">
-                <div className="boxes" onClick={(e)=>{toggle(e,3)}}></div>
-                <div className="boxes" onClick={(e)=>{toggle(e,4)}}></div>
-                <div className="boxes" onClick={(e)=>{toggle(e,5)}}></div>
+  const resetGame = () => {
+    setData(Array(9).fill(""));
+    setLock(false);
+    setCount(0);
+  };
 
-            </div>
-             <div className="row3">
-                <div className="boxes" onClick={(e)=>{toggle(e,6)}}></div>
-                <div className="boxes" onClick={(e)=>{toggle(e,7)}}></div>
-                <div className="boxes" onClick={(e)=>{toggle(e,8)}}></div>
-
-            </div>
-        </div>
-        <button className='reset bg-red-500 text-white p-5 w-30 rounded' onClick={resetGame}>Reset</button>
-      
+  const Box = ({ index }) => (
+    <div
+      onClick={() => toggle(index)}
+      className="boxes w-24 h-24 bg-gray-800 flex justify-center items-center cursor-pointer"
+    >
+      {data[index] === "x" && <img src={cross} alt="cross" id="img" />}
+      {data[index] === "o" && <img src={circle} alt="circle" id="img" />}
     </div>
-  )
-}
+  );
 
-export default TicTacToe
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center bg-black text-white">
+      <h1 className="font-bold mb-8 text-2xl">
+        Tic Tac Toe Game In <span className="text-red-500">React</span>
+      </h1>
+
+      <div className="grid grid-cols-3 gap-2">
+        {data.map((_, i) => <Box key={i} index={i} />)}
+      </div>
+
+      <button
+        onClick={resetGame}
+        className="bg-red-500 text-white px-6 py-4 rounded-lg hover:bg-red-600 mt-10"
+      >
+        Reset
+      </button>
+    </div>
+  );
+};
+
+export default TicTacToe;
